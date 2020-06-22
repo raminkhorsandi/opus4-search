@@ -1,16 +1,70 @@
 {
   "name": "opus4-repo/search",
-  "description": "Solr configuration for Opus 4",
+  "description": "OPUS 4 search implementation based on Solr.",
   "license": "GPL-2.0+",
   "type": "library",
   "keywords": [
     "opus4",
     "solr"
   ],
-  "homepage": "http://opus4.kobv.de",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "4.6-dev"
+  "homepage": "http://www.opus-repository.org",
+  "require": {
+    "php": ">=5.6",
+    "ext-xsl": "*",
+    "ext-dom": "*",
+    "ext-iconv": "*",
+    "ext-simplexml": "*",
+    "solarium/solarium": "3.8.*",
+    "opus4-repo/framework": "4.7-RC",
+    "opus4-repo/opus4-common": "4.7-RC",
+    "zendframework/zendframework1": "1.12.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.24",
+    "phpunit/dbunit": "~1.3",
+    "phpunit/php-invoker": "~1.1",
+    "phpunit/phpunit-selenium": "1.4.2",
+    "zendframework/zend-coding-standard": "~1.0.0",
+    "phpmd/phpmd": "@stable",
+    "phploc/phploc": "@stable",
+    "sebastian/phpcpd": "*"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Opus\\Search\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OpusTest\\Search\\": "test/"
+    }
+  },
+  "scripts": {
+    "check": [
+      "Composer\\Config::disableProcessTimeout",
+      "@prepare",
+      "@cs-check",
+      "@phpmd",
+      "@phpcpd",
+      "@test"
+    ],
+    "check-full": [
+      "Composer\\Config::disableProcessTimeout",
+      "@prepare",
+      "@cs-check",
+      "@phpmd",
+      "@phpcpd",
+      "@test-coverage"
+    ],
+    "prepare": "mkdir -p build",
+    "test": "phpunit --colors=always --log-junit build/phpunit.xml",
+    "test-coverage": "phpunit --log-junit build/phpunit.xml --colors=always --coverage-html build/ --coverage-clover build/clover.xml",
+    "cs-check": "phpcs -n --report=checkstyle --report-file=build/checkstyle.xml",
+    "cs-fix": "phpcbf",
+    "phpmd": "phpmd src xml cleancode,unusedcode,design,naming --reportfile build/phpmd.xml --ignore-violations-on-exit",
+    "phploc": "phploc --log-csv build/phploc.csv src",
+    "phpcpd": "phpcpd . --min-lines 3 --min-tokens 30 --log-pmd build/pmd-cpd.xml --progress || true"
   }
 }
